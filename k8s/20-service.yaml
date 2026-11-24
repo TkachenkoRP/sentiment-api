@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sentiment-api
+  namespace: sentiment
+  labels:
+    app: sentiment-api
+spec:
+  type: LoadBalancer                # внешний IP (127.0.0.1) выдаёт `minikube tunnel`
+  selector:
+    app: sentiment-api
+  ports:
+    - name: http                    # имя порта используется в ServiceMonitor
+      port: 8080                    # 8080, чтобы не конфликтовать с Ingress (порт 80) при minikube tunnel
+      targetPort: http

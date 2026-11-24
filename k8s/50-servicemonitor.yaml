@@ -1,0 +1,18 @@
+# CRD ServiceMonitor устанавливается вместе с kube-prometheus-stack (Prometheus Operator)
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: sentiment-api
+  namespace: sentiment
+  labels:
+    release: prometheus              # метка релиза Helm (на случай селектора по умолчанию)
+spec:
+  selector:
+    matchLabels:
+      app: sentiment-api
+  namespaceSelector:
+    matchNames: [sentiment]
+  endpoints:
+    - port: http
+      path: /actuator/prometheus     # Spring Boot Actuator + Micrometer
+      interval: 15s

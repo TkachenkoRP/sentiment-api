@@ -1,0 +1,31 @@
+# Значения для helm chart prometheus-community/kube-prometheus-stack (облегчённая версия для Minikube)
+prometheus:
+  prometheusSpec:
+    # собирать ServiceMonitor из ВСЕХ namespace, а не только с меткой release=prometheus
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    retention: 6h
+    scrapeInterval: 15s
+    resources:
+      requests: { cpu: 200m, memory: 512Mi }
+
+grafana:
+  adminUser: admin
+  adminPassword: admin
+  defaultDashboardsTimezone: browser
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard        # ConfigMap с этой меткой автоматически становится дашбордом
+      searchNamespace: ALL
+  resources:
+    requests: { cpu: 100m, memory: 200Mi }
+
+alertmanager:
+  enabled: false                       # не нужен для демо, экономим ресурсы
+
+# node-exporter в Minikube (Docker driver, Windows) часто падает из-за mount propagation
+nodeExporter:
+  enabled: false
+prometheus-node-exporter:
+  enabled: false

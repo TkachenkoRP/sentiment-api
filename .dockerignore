@@ -1,0 +1,7 @@
+target/
+.git/
+.idea/
+*.md
+k8s/
+monitoring/
+scripts/

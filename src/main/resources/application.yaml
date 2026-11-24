@@ -1,0 +1,35 @@
+server:
+  port: 8080
+  shutdown: graceful
+
+spring:
+  application:
+    name: sentiment-api
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+
+# ---------- Actuator + Prometheus ----------
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true          # /actuator/health/liveness и /readiness для Kubernetes
+  metrics:
+    tags:
+      application: sentiment-api
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true   # гистограмма для p95/p99 в Grafana
+
+# ---------- ИИ-модель ----------
+sentiment:
+  model-path: ${SENTIMENT_MODEL_PATH:model/model_int8.onnx}
+  vocab-path: ${SENTIMENT_VOCAB_PATH:model/vocab.txt}
+  model-name: rubert-tiny-sentiment-balanced (ONNX int8)
+  labels: negative,neutral,positive   # порядок = порядок выходов модели (id2label)
+  max-length: 128
+  threads: ${SENTIMENT_THREADS:2}
